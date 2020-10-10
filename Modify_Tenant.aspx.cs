@@ -48,7 +48,7 @@ namespace PG_Management
         {
             string strTenantID = GridView1.Rows[e.NewEditIndex].Cells[1].Text;
             string URL = "/Add_New_Tenant.aspx?strTenantId=" + strTenantID;
-            Response.Redirect(URL,false);
+            Response.Redirect(URL,true);
 
         }
         protected void OnRowCancelingEdit(object sender, EventArgs e)

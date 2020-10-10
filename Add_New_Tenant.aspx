@@ -114,6 +114,6 @@
         <asp:Label ID="Label20" Text="Rent Amount" runat="server"></asp:Label>
         <asp:TextBox ID="txtTenantRent"  runat="server"></asp:TextBox>
         <%--<asp:RequiredFieldValidator runat="server" id="RequiredFieldValidator19" controltovalidate="txtTenantRent" errormessage="Required Field!" />--%>
-        <asp:Button ID="Submit" Text="Add New Tenant Details" OnCommand="Add_New_Tenant_Details" runat="server" />
+        <asp:Button ID="Submit" Text="Add New Tenant Details" OnClick="Add_New_Tenant_Details" runat="server"/>
     </div>
 </asp:Content>

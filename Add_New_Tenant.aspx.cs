@@ -15,15 +15,12 @@ namespace PG_Management
         
         protected void Page_Load(object sender, EventArgs e)
         {
-            Submit.Text = "Modify Tenant Details";
-            Page.Title = "Modify Tenant Details";
-            Submit.OnClientClick = "ModifyTenantDetails";
-            string strTenantId;
             if (!String.IsNullOrEmpty(Request.QueryString["strTenantId"]))
             {
-                // Query string value is there so now use it
-                strTenantId = Request.QueryString["strTenantId"];
-                ModifyTenantDetails(blnShowAsEdit: true, strTenantID: strTenantId);
+                Submit.Text = "Modify Tenant Details";
+                Page.Title = "Modify Tenant Details";
+                Submit.Click -= new EventHandler(Add_New_Tenant_Details);
+                Submit.Click += new EventHandler(ModifyTenantDetails);
             }
         }
         protected string RunSQL(string strSQLCmd)
@@ -67,13 +64,17 @@ namespace PG_Management
                 strSQLCmd = "EXEC [PG_Management].[dbo].AddToPGTable " + strValues + ", 1, '" + strTenantID +"'";
                 strTenantID = RunSQL(strSQLCmd);
             }
-            if (strTenantID=="1")
+            if (strTenantID=="True")
             {
                 return true.ToString();
             }
-            else
+            else if((strTenantID == "False"))
             {
                 return false.ToString();
+            }
+            else
+            {
+                return strTenantID;
             }
         }
         protected bool Add_Father_Details(int intTenantID, bool blnModify = false)
@@ -163,44 +164,47 @@ namespace PG_Management
         {
             //Write Code to get current details of the tenant.
         }
-        protected void ModifyTenantDetails(bool blnShowAsEdit = false, string strTenantID = null)
+        protected void ModifyTenantDetails(object sender, EventArgs e)
         {
-            if (blnShowAsEdit == true)
+            if (Page.IsValid)
             {
-                int intTenantID;
-                bool blnConversionSuccess;
-                try
+                string strTenantID = Request.QueryString["strTenantId"];
+                bool blnShowAsEdit = true;
+                if (blnShowAsEdit == true)
                 {
-                    bool blnSuccess = bool.Parse(Add_PG_Table_Details(blnShowAsEdit, strTenantID));
-                    if (blnSuccess)
+                    int intTenantID;
+                    bool blnConversionSuccess;
+                    try
                     {
-                        blnConversionSuccess = Int32.TryParse(strTenantID, out intTenantID);
-                        blnSuccess = Add_Tenant_Details(intTenantID, blnShowAsEdit);
+                        bool blnSuccess = bool.Parse(Add_PG_Table_Details(blnShowAsEdit, strTenantID));
                         if (blnSuccess)
                         {
+                            blnConversionSuccess = Int32.TryParse(strTenantID, out intTenantID);
                             blnSuccess = Add_Tenant_Details(intTenantID, blnShowAsEdit);
                             if (blnSuccess)
                             {
-                                blnSuccess = Add_LG_Details(intTenantID, blnShowAsEdit);
+                                blnSuccess = Add_Tenant_Details(intTenantID, blnShowAsEdit);
                                 if (blnSuccess)
-                                    Show_Alert("Data Added Successfully, Tenant ID = " + strTenantID);
-                                else
-                                    Show_Alert("Data Not Added:  " + strTenantID);
+                                {
+                                    blnSuccess = Add_LG_Details(intTenantID, blnShowAsEdit);
+                                    if (blnSuccess)
+                                        Show_Alert("Data Modified Successfully for Tenant ID = " + strTenantID);
+                                    else
+                                        Show_Alert("Data Not Added:  " + strTenantID);
+                                }
                             }
                         }
                     }
+                    catch (Exception ex)
+                    {
+                        Show_Alert("Could not update data for Tenant ID " + strTenantID + " due to " + "'" + ex.Message.ToString());
+                    }
                 }
-                catch (Exception ex)
-                {
-                    Show_Alert("Could not update data for Tenant ID " + strTenantID + " due to " + "'" + ex.Message.ToString());
-                }
-
-
-
             }
         }
-        protected void Add_New_Tenant_Details(object sender, CommandEventArgs e)
+        protected void Add_New_Tenant_Details(object sender, EventArgs e)
         {
+            
             if(Page.IsValid)
             {
                 bool blnShowAsEdit = false;
@@ -229,7 +233,7 @@ namespace PG_Management
                     Show_Alert("Data Not Added:  " + strTenantID);
                 }
                 
-            }            
+            }
         }
     }
 }
