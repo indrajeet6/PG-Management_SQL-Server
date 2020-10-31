@@ -7,6 +7,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Configuration;
 using System.Data;
+using Microsoft.Ajax.Utilities;
 
 namespace PG_Management
 {
@@ -21,6 +22,7 @@ namespace PG_Management
                 Page.Title = "Modify Tenant Details";
                 Submit.Click -= new EventHandler(Add_New_Tenant_Details);
                 Submit.Click += new EventHandler(ModifyTenantDetails);
+                GetCurrentDetails(Request.QueryString["strTenantId"]);
             }
         }
         protected string RunSQL(string strSQLCmd)
@@ -160,9 +162,82 @@ namespace PG_Management
                 return false;
             }
         }
-        protected  void GetCurrentDetails(string strTenantID)
+        protected void GetCurrentDetails(string strTenantID)
         {
             //Write Code to get current details of the tenant.
+            //Execute the stored procedures GetFatherDetails, GetLGDetails, GetRentAmount and GetTenantDetails.
+            SqlDataReader sqlDataReader ;
+            string strRentAmount = string.Empty;
+
+            //Populate Rent Amount
+            strRentAmount = RunSQL("EXEC GetRentAmount " + strTenantID);
+            txtTenantRent.Text = strRentAmount;
+
+            //Populate Father Details
+            sqlDataReader = RunSQLEnumerable("EXEC GetFatherDetails " + strTenantID);
+            if (sqlDataReader.HasRows)
+            {
+                while (sqlDataReader.Read())
+                {
+                    txtFatherName.Text = sqlDataReader["Father_Name"].ToString();
+                    txtFatherJob.Text = sqlDataReader["Occupation"].ToString();
+                    txtFatherPermAddress.Text = sqlDataReader["PERMANENT_ADDRESS"].ToString();
+                    txtFatherOffice.Text = sqlDataReader["Office_Address"].ToString();
+                    txtFatherResidence.Text = sqlDataReader["Current_Address"].ToString();
+                    txtFatherMobile.Text = sqlDataReader["MOBILE_PHONE"].ToString();
+                }
+            }
+
+            //Populate LG Details
+            sqlDataReader = null;
+            sqlDataReader = RunSQLEnumerable("EXEC GetLGDetails " + strTenantID);
+            if (sqlDataReader.HasRows)
+            {
+                while (sqlDataReader.Read())
+                {
+                    txtLGName.Text = sqlDataReader["LG_NAME"].ToString();
+                    txtLGJob.Text = sqlDataReader["Occupation"].ToString();
+                    txtLGPermAddress.Text = sqlDataReader["Permanent_Address"].ToString();
+                    txtLGOffice.Text = sqlDataReader["Office_Address"].ToString();
+                    txtLGResidence.Text = sqlDataReader["Current_Address"].ToString();
+                    txtLGMobile.Text = sqlDataReader["Mobile_Phone"].ToString();
+                }
+            }
+
+            //Populate Tenant Details
+            sqlDataReader = null;
+            sqlDataReader = RunSQLEnumerable("EXEC GetTenantDetails " + strTenantID);
+            if (sqlDataReader.HasRows)
+            {
+                while (sqlDataReader.Read())
+                {
+                    txtTenantName.Text = sqlDataReader["Tenant_Name"].ToString();
+                    txtTenantJob.Text = sqlDataReader["Occupation"].ToString();
+                    txtTenantPermAddress.Text = sqlDataReader["Permanent_Address"].ToString();
+                    txtTenantOffice.Text = sqlDataReader["Office_Address"].ToString();
+                    txtTenantResidence.Text = sqlDataReader["Current_Address"].ToString();
+                    txtTenantMobile.Text = sqlDataReader["Mobile_Phone"].ToString();
+                }
+            }
+        }
+        protected SqlDataReader RunSQLEnumerable(string strSQLCommand)
+        {
+            SqlDataReader sqlDataReader ;
+            string strConnString = ConfigurationManager.ConnectionStrings["SQLServerDB"].ConnectionString;
+            SqlConnection conn = new SqlConnection(strConnString);
+            SqlCommand sqlCommand = conn.CreateCommand();
+            sqlCommand.CommandText = strSQLCommand;
+            conn.Open();
+            try
+            {
+                sqlDataReader = sqlCommand.ExecuteReader();
+            }
+            catch (Exception e)
+            {
+                sqlDataReader = (SqlDataReader)e.Message.AsEnumerable();
+                //Show_Alert("Error Adding Data (RUN SQL): \n" + e.Message.ToString());
+            }
+            return sqlDataReader;
         }
         protected void ModifyTenantDetails(object sender, EventArgs e)
         {
