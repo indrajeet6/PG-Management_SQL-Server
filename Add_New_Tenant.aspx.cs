@@ -16,13 +16,21 @@ namespace PG_Management
         
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (!String.IsNullOrEmpty(Request.QueryString["strTenantId"]))
+            if(!IsPostBack)
             {
-                Submit.Text = "Modify Tenant Details";
-                Page.Title = "Modify Tenant Details";
+                if (!String.IsNullOrEmpty(Request.QueryString["strTenantId"]))
+                {
+                    Submit.Text = "Modify Tenant Details";
+                    Page.Title = "Modify Tenant Details";
+                    Submit.Click -= new EventHandler(Add_New_Tenant_Details);
+                    Submit.Click += new EventHandler(ModifyTenantDetails);
+                    GetCurrentDetails(Request.QueryString["strTenantId"]);
+                }
+            }
+            else
+            {
                 Submit.Click -= new EventHandler(Add_New_Tenant_Details);
-                Submit.Click += new EventHandler(ModifyTenantDetails);
-                GetCurrentDetails(Request.QueryString["strTenantId"]);
+                Submit.Click += new EventHandler(ModifyTenantDetails);                
             }
         }
         protected string RunSQL(string strSQLCmd)
