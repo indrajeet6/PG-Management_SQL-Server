@@ -2884,7 +2884,7 @@ caption {
 }
 
 th {
-    text-align: left;
+    text-align: center;
 }
 
 .table {
@@ -6070,6 +6070,7 @@ a.badge:focus {
     margin-bottom: 30px;
     color: inherit;
     background-color: #eee;
+    text-align: center;
 }
 
     .jumbotron h1,

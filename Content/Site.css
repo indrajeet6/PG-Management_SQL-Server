@@ -18,11 +18,24 @@ textarea {
     max-width: 280px;
 }
 
+/*.alertBox {
+    position: absolute;
+    top: 100px;
+    left: 50%;
+    width: 500px;
+    margin-left: -250px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    padding: 4px 8px;
+}*/
 
 /* Responsive: Portrait tablets and up */
 @media screen and (min-width: 768px) {
     .jumbotron {
         margin-top: 20px;
+        align-content:center;
     }
 
     .body-content {

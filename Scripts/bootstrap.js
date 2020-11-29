@@ -8,6 +8,12 @@ if (typeof jQuery === 'undefined') {
   throw new Error('Bootstrap\'s JavaScript requires jQuery')
 }
 
+//function closeAlert(e)
+//        {
+//    e.preventDefault();
+//            this.parentNode.style.display = "none";
+//}
+
 +function ($) {
   'use strict';
   var version = $.fn.jquery.split(' ')[0].split('.')
