@@ -23,10 +23,4 @@
     <div>
         <asp:Label ID="Error_Msg" Font-Bold="true" Font-Size="XX-Large" runat="server"></asp:Label>
     </div>
-   <%-- <div runat="server" id="AlertBox" class="alertBox" Visible="false">
-        <div runat="server" id="AlertBoxMessage"></div>
-        <button onclick="closeAlert.call(this, event)">Ok</button>
-    </div>--%>
-    
-
 </asp:Content>

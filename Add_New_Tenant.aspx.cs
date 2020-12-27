@@ -71,6 +71,7 @@ namespace PG_Management
             }
             else 
             {
+                //Change the code so that the paid status is not automatically set to paid (1), but is the original status of that record. Indrajeet
                 strSQLCmd = "EXEC [PG_Management].[dbo].AddToPGTable " + strValues + ", 1, '" + strTenantID +"'";
                 strTenantID = RunSQL(strSQLCmd);
             }
