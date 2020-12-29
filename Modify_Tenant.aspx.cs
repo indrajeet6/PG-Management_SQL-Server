@@ -23,9 +23,9 @@ namespace PG_Management
         protected void BindGrid()
         {
             string strConnString = ConfigurationManager.ConnectionStrings["SQLServerDB"].ConnectionString;
-            string strQuery = @"SELECT [Tenant_ID] as 'Tenant ID', [Tenant_Name] AS 'Name', [Tenant_Phone_Number] AS 'Phone Number', Right([Pay_Date],2) AS 'Due Date', 
-                                                [Rent] FROM PG_Management.dbo.PG_Table WHERE [Current_Tenant] = 1";
-
+            string strQuery = @"SELECT [Tenant _Details].[Tenant_ID] as 'Tenant ID', [Tenant _Details].[Name] AS 'Name',[Tenant _Details].[Mobile_Phone] AS 'Phone Number', 
+                                            Right([PG_Table].[Pay_Date],2) AS 'Due Date', [Rent] FROM [Tenant _Details], [PG_Table] 
+                                            WHERE [Tenant _Details].[Tenant_ID] = [PG_Table].[Tenant_ID] AND [Current_Tenant] = 1";
             using (SqlConnection conn = new SqlConnection(strConnString))
             {
                 using (SqlCommand cmd = new SqlCommand(strQuery))
