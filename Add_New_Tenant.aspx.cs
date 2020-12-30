@@ -36,7 +36,7 @@ namespace PG_Management
         protected string RunSQL(string strSQLCmd)
         {
             string strReturnValue = string.Empty;
-            string strConnString = ConfigurationManager.ConnectionStrings["SQLServerDB"].ConnectionString;
+            string strConnString = ConfigurationManager.ConnectionStrings["SmarterASP"].ConnectionString;
             SqlConnection conn = new SqlConnection(strConnString);
             SqlCommand sqlCommand = conn.CreateCommand();
             sqlCommand.CommandText = strSQLCmd;
@@ -59,6 +59,7 @@ namespace PG_Management
         protected string Add_PG_Table_Details(bool blnModify = false, string strTenantID = null) 
         {
             //EXEC [PG_Management].[dbo].AddToPGTable '9873672742','Indrajeet Roy',1,8000,'2020-05-21',1,0,'2020-01-01',8000,'2020-02-21'
+            //Change the Code according to the new PG Table Definition and the corresponding stored Procedure.
             string strValues = string.Empty;
             string strSQLCmd;
             strValues = @"'" + txtTenantMobile.Text.Trim().ToString() + "', '" + txtTenantName.Text.Trim().ToString() + "', " + "1, '" + txtTenantRent.Text.Trim().ToString() + "', "
@@ -188,12 +189,12 @@ namespace PG_Management
             {
                 while (sqlDataReader.Read())
                 {
-                    txtFatherName.Text = sqlDataReader["Father_Name"].ToString();
+                    txtFatherName.Text = sqlDataReader["Name"].ToString();
                     txtFatherJob.Text = sqlDataReader["Occupation"].ToString();
-                    txtFatherPermAddress.Text = sqlDataReader["PERMANENT_ADDRESS"].ToString();
+                    txtFatherPermAddress.Text = sqlDataReader["Permanent_Address"].ToString();
                     txtFatherOffice.Text = sqlDataReader["Office_Address"].ToString();
                     txtFatherResidence.Text = sqlDataReader["Current_Address"].ToString();
-                    txtFatherMobile.Text = sqlDataReader["MOBILE_PHONE"].ToString();
+                    txtFatherMobile.Text = sqlDataReader["Mobile_Phone"].ToString();
                 }
             }
 
@@ -204,7 +205,7 @@ namespace PG_Management
             {
                 while (sqlDataReader.Read())
                 {
-                    txtLGName.Text = sqlDataReader["LG_NAME"].ToString();
+                    txtLGName.Text = sqlDataReader["Name"].ToString();
                     txtLGJob.Text = sqlDataReader["Occupation"].ToString();
                     txtLGPermAddress.Text = sqlDataReader["Permanent_Address"].ToString();
                     txtLGOffice.Text = sqlDataReader["Office_Address"].ToString();
@@ -220,7 +221,7 @@ namespace PG_Management
             {
                 while (sqlDataReader.Read())
                 {
-                    txtTenantName.Text = sqlDataReader["Tenant_Name"].ToString();
+                    txtTenantName.Text = sqlDataReader["Name"].ToString();
                     txtTenantJob.Text = sqlDataReader["Occupation"].ToString();
                     txtTenantPermAddress.Text = sqlDataReader["Permanent_Address"].ToString();
                     txtTenantOffice.Text = sqlDataReader["Office_Address"].ToString();
@@ -232,7 +233,7 @@ namespace PG_Management
         protected SqlDataReader RunSQLEnumerable(string strSQLCommand)
         {
             SqlDataReader sqlDataReader ;
-            string strConnString = ConfigurationManager.ConnectionStrings["SQLServerDB"].ConnectionString;
+            string strConnString = ConfigurationManager.ConnectionStrings["SmarterASP"].ConnectionString;
             SqlConnection conn = new SqlConnection(strConnString);
             SqlCommand sqlCommand = conn.CreateCommand();
             sqlCommand.CommandText = strSQLCommand;

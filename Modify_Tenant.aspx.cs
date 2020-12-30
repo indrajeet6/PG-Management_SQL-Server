@@ -22,10 +22,10 @@ namespace PG_Management
         }
         protected void BindGrid()
         {
-            string strConnString = ConfigurationManager.ConnectionStrings["SQLServerDB"].ConnectionString;
-            string strQuery = @"SELECT [Tenant _Details].[Tenant_ID] as 'Tenant ID', [Tenant _Details].[Name] AS 'Name',[Tenant _Details].[Mobile_Phone] AS 'Phone Number', 
-                                            Right([PG_Table].[Pay_Date],2) AS 'Due Date', [Rent] FROM [Tenant _Details], [PG_Table] 
-                                            WHERE [Tenant _Details].[Tenant_ID] = [PG_Table].[Tenant_ID] AND [Current_Tenant] = 1";
+            string strConnString = ConfigurationManager.ConnectionStrings["SmarterASP"].ConnectionString;
+            string strQuery = @"SELECT [Tenant_Details].[Tenant_ID] as 'Tenant ID', [Tenant_Details].[Name] AS 'Name',[Tenant_Details].[Mobile_Phone] AS 'Phone Number', 
+                                            Right([PG_Table].[Pay_Date],2) AS 'Due Date', [Rent] FROM [Tenant_Details], [PG_Table] 
+                                            WHERE [Tenant_Details].[Tenant_ID] = [PG_Table].[Tenant_ID] AND [Current_Tenant] = 1";
             using (SqlConnection conn = new SqlConnection(strConnString))
             {
                 using (SqlCommand cmd = new SqlCommand(strQuery))
@@ -59,7 +59,7 @@ namespace PG_Management
         protected void OnRowDeleting(object sender, GridViewDeleteEventArgs e)
         {
             int intTenantID = Convert.ToInt32(GridView1.DataKeys[e.RowIndex].Values[0]);
-            string constr = ConfigurationManager.ConnectionStrings["SQLServerDB"].ConnectionString;
+            string constr = ConfigurationManager.ConnectionStrings["SmarterASP"].ConnectionString;
             using (SqlConnection con = new SqlConnection(constr))
             {
                 using (SqlCommand cmd = new SqlCommand("UPDATE DBO.PG_Table SET [Current_Tenant] = 0 WHERE [Tenant_ID] = @TenantID"))
