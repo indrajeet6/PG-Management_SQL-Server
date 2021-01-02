@@ -58,35 +58,42 @@ namespace PG_Management
         }
         protected string Add_PG_Table_Details(bool blnModify = false, string strTenantID = null) 
         {
-            //EXEC [PG_Management].[dbo].AddToPGTable '9873672742','Indrajeet Roy',1,8000,'2020-05-21',1,0,'2020-01-01',8000,'2020-02-21'
+            //EXEC [dbo].AddToPGTable 1, '2020-12-31',0,10000,0,'1900-01-01'
             //Change the Code according to the new PG Table Definition and the corresponding stored Procedure.
             string strValues = string.Empty;
             string strSQLCmd;
-            strValues = @"'" + txtTenantMobile.Text.Trim().ToString() + "', '" + txtTenantName.Text.Trim().ToString() + "', " + "1, '" + txtTenantRent.Text.Trim().ToString() + "', "
-                + "'" + DateTime.Now.ToString("yyyy-MM-dd") + "', " + "1, 0, '2020-01-01', "+ "'" + txtTenantRent.Text.Trim().ToString() + "', " + "'" + DateTime.Now.ToString("yyyy-MM-dd") + "'";
+            string strResult;
+            string strPaidStatus;
+
             if (blnModify == false)
             {
+                strValues = @"1, '" + DateTime.Now.ToString("yyyy-MM-dd") + "', 0, ' 1900-01-01'";
                 strTenantID = string.Empty;
-                strSQLCmd = "EXEC [PG_Management].[dbo].AddToPGTable " + strValues;
-                strTenantID = RunSQL(strSQLCmd);
+                strSQLCmd = "EXEC [dbo].[AddToPGTable] " + strValues;
+                strResult = RunSQL(strSQLCmd);
             }
             else 
             {
-                //Change the code so that the paid status is not automatically set to paid (1), but is the original status of that record. Indrajeet
-                strSQLCmd = "EXEC [PG_Management].[dbo].AddToPGTable " + strValues + ", 1, '" + strTenantID +"'";
-                strTenantID = RunSQL(strSQLCmd);
+                //Get Paid Status of the tenant
+                strSQLCmd = "SELECT [Paid_Status] FROM [DBO].[PG_TABLE] WHERE [Tenant_ID] = " + strTenantID;
+                strPaidStatus = RunSQL(strSQLCmd);
+                
+                //Use Current paid status of tenant to update the DB
+                strValues = @"1, '" + DateTime.Now.ToString("yyyy-MM-dd") + "', " + strPaidStatus + ", ' 1900-01-01', " + strTenantID + ", 1";
+                strSQLCmd = "EXEC [dbo].[AddToPGTable] " + strValues ;
+                strResult = RunSQL(strSQLCmd);
             }
-            if (strTenantID=="True")
+            if (strResult == "True")
             {
                 return true.ToString();
             }
-            else if((strTenantID == "False"))
+            else if((strResult == "False"))
             {
                 return false.ToString();
             }
             else
             {
-                return strTenantID;
+                return strResult;
             }
         }
         protected bool Add_Father_Details(int intTenantID, bool blnModify = false)
@@ -178,7 +185,6 @@ namespace PG_Management
             //Execute the stored procedures GetFatherDetails, GetLGDetails, GetRentAmount and GetTenantDetails.
             SqlDataReader sqlDataReader ;
             string strRentAmount = string.Empty;
-
             //Populate Rent Amount
             strRentAmount = RunSQL("EXEC GetRentAmount " + strTenantID);
             txtTenantRent.Text = strRentAmount;
