@@ -36,14 +36,14 @@ namespace PG_Management
         protected string RunSQL(string strSQLCmd)
         {
             string strReturnValue = string.Empty;
-            string strConnString = ConfigurationManager.ConnectionStrings["SmarterASP"].ConnectionString;
+            string strConnString = ConfigurationManager.ConnectionStrings["SQLServerDB"].ConnectionString;
             SqlConnection conn = new SqlConnection(strConnString);
             SqlCommand sqlCommand = conn.CreateCommand();
             sqlCommand.CommandText = strSQLCmd;
             conn.Open();
             try
             {
-                strReturnValue = sqlCommand.ExecuteScalar().ToString();
+                strReturnValue = sqlCommand.ExecuteScalar().ToString();                
             }
             catch (Exception e)
             {
@@ -59,7 +59,6 @@ namespace PG_Management
         protected string Add_PG_Table_Details(bool blnModify = false, string strTenantID = null) 
         {
             //EXEC [dbo].AddToPGTable 1, '2020-12-31',0,10000,0,'1900-01-01'
-            //Change the Code according to the new PG Table Definition and the corresponding stored Procedure.
             string strValues = string.Empty;
             string strSQLCmd;
             string strResult;
@@ -77,9 +76,16 @@ namespace PG_Management
                 //Get Paid Status of the tenant
                 strSQLCmd = "SELECT [Paid_Status] FROM [DBO].[PG_TABLE] WHERE [Tenant_ID] = " + strTenantID;
                 strPaidStatus = RunSQL(strSQLCmd);
-                
+
                 //Use Current paid status of tenant to update the DB
-                strValues = @"1, '" + DateTime.Now.ToString("yyyy-MM-dd") + "', " + strPaidStatus + ", ' 1900-01-01', " + strTenantID + ", 1";
+                if (strPaidStatus.ToLower() == "false")
+                    strPaidStatus = "0";
+                else if (strPaidStatus.ToLower() == "true")
+                    strPaidStatus = "1";
+                else
+                    return strPaidStatus;
+                    
+                strValues = @"1, '" + DateTime.Now.ToString("yyyy-MM-dd") + "', " + strPaidStatus +", "+txtTenantRent.Text.ToString() + ", 0, '1900-01-01', " + strTenantID + ", 1";
                 strSQLCmd = "EXEC [dbo].[AddToPGTable] " + strValues ;
                 strResult = RunSQL(strSQLCmd);
             }
@@ -239,7 +245,7 @@ namespace PG_Management
         protected SqlDataReader RunSQLEnumerable(string strSQLCommand)
         {
             SqlDataReader sqlDataReader ;
-            string strConnString = ConfigurationManager.ConnectionStrings["SmarterASP"].ConnectionString;
+            string strConnString = ConfigurationManager.ConnectionStrings["SQLServerDB"].ConnectionString;
             SqlConnection conn = new SqlConnection(strConnString);
             SqlCommand sqlCommand = conn.CreateCommand();
             sqlCommand.CommandText = strSQLCommand;

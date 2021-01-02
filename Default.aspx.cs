@@ -27,7 +27,7 @@ namespace PG_Management
         protected string RunSQL(string strSQLCmd)
         {
             string strReturnValue = string.Empty;
-            string strConnString = ConfigurationManager.ConnectionStrings["SmarterASP"].ConnectionString;
+            string strConnString = ConfigurationManager.ConnectionStrings["SQLServerDB"].ConnectionString;
             SqlConnection conn = new SqlConnection(strConnString);
             SqlCommand sqlCommand = conn.CreateCommand();
             sqlCommand.CommandText = strSQLCmd;
@@ -60,7 +60,7 @@ namespace PG_Management
         }
         protected void BindGrid()
         {
-            string strConnString = ConfigurationManager.ConnectionStrings["SmarterASP"].ConnectionString;
+            string strConnString = ConfigurationManager.ConnectionStrings["SQLServerDB"].ConnectionString;
             string strQuery = @"SELECT [PG_Table].[Tenant_ID] AS 'ID', [Tenant_Details].[Name],CONCAT(Right([PG_Table].[Pay_Date],2),'-',FORMAT(GETDATE(),'MMM')) AS 'Due Date',
                                               [PG_Table].[Rent],[Tenant_Details].[Mobile_Phone] FROM [PG_Table], [Tenant_Details] WHERE [PG_Table].[Tenant_ID] = [Tenant_Details].[Tenant_ID] 
                                               AND ABS((CAST(RIGHT(CONVERT(VARCHAR(10), getdate(), 111),2) AS int)- CAST(RIGHT([Pay_Date],2) AS int))) <= 7 AND [Current_Tenant]=1 AND [Paid_Status]=0";
