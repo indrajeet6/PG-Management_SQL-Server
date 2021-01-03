@@ -36,14 +36,14 @@ namespace PG_Management
         protected string RunSQL(string strSQLCmd)
         {
             string strReturnValue = string.Empty;
-            string strConnString = ConfigurationManager.ConnectionStrings["SQLServerDB"].ConnectionString;
+            string strConnString = ConfigurationManager.ConnectionStrings["RemoteDB"].ConnectionString;
             SqlConnection conn = new SqlConnection(strConnString);
             SqlCommand sqlCommand = conn.CreateCommand();
             sqlCommand.CommandText = strSQLCmd;
             conn.Open();
             try
             {
-                strReturnValue = sqlCommand.ExecuteScalar().ToString();                
+                strReturnValue = sqlCommand.ExecuteScalar().ToString();
             }
             catch (Exception e)
             {
@@ -245,7 +245,7 @@ namespace PG_Management
         protected SqlDataReader RunSQLEnumerable(string strSQLCommand)
         {
             SqlDataReader sqlDataReader ;
-            string strConnString = ConfigurationManager.ConnectionStrings["SQLServerDB"].ConnectionString;
+            string strConnString = ConfigurationManager.ConnectionStrings["RemoteDB"].ConnectionString;
             SqlConnection conn = new SqlConnection(strConnString);
             SqlCommand sqlCommand = conn.CreateCommand();
             sqlCommand.CommandText = strSQLCommand;
