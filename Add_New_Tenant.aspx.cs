@@ -13,7 +13,6 @@ namespace PG_Management
 {
     public partial class Add_New_Tenant : System.Web.UI.Page
     {
-        
         protected void Page_Load(object sender, EventArgs e)
         {
             if(!IsPostBack)
