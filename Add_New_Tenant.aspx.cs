@@ -26,11 +26,11 @@ namespace PG_Management
                     GetCurrentDetails(Request.QueryString["strTenantId"]);
                 }
             }
-            else
-            {
-                Submit.Click -= new EventHandler(Add_New_Tenant_Details);
-                Submit.Click += new EventHandler(ModifyTenantDetails);                
-            }
+            //else
+            //{
+            //    Submit.Click -= new EventHandler(Add_New_Tenant_Details);
+            //    Submit.Click += new EventHandler(ModifyTenantDetails);                
+            //}
         }
         protected string RunSQL(string strSQLCmd)
         {
@@ -65,7 +65,7 @@ namespace PG_Management
 
             if (blnModify == false)
             {
-                strValues = @"1, '" + DateTime.Now.ToString("yyyy-MM-dd") + "', 0, ' 1900-01-01'";
+                strValues = @"1, '" + DateTime.Now.ToString("yyyy-MM-dd") + "', 0, " + txtTenantRent.Text.ToString() + ", 0, ' 1900-01-01'";
                 strTenantID = string.Empty;
                 strSQLCmd = "EXEC [dbo].[AddToPGTable] " + strValues;
                 strResult = RunSQL(strSQLCmd);
