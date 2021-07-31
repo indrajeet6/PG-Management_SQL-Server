@@ -7,11 +7,13 @@ using System.Web.UI.WebControls;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
+using PG_Management.Classes;
 
 namespace PG_Management
 {
     public partial class Modify_Tenant : Page
     {
+        LogClass LogObject = new LogClass();
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!this.IsPostBack)
@@ -22,7 +24,7 @@ namespace PG_Management
         }
         protected void BindGrid()
         {
-            string strConnString = ConfigurationManager.ConnectionStrings["RemoteDB"].ConnectionString;
+            string strConnString = ConfigurationManager.ConnectionStrings["SQLServerDB"].ConnectionString;
             string strQuery = @"SELECT [Tenant_Details].[Tenant_ID] as 'Tenant ID', [Tenant_Details].[Name] AS 'Name',[Tenant_Details].[Mobile_Phone] AS 'Phone Number', 
                                             Right([PG_Table].[Pay_Date],2) AS 'Due Date', [Rent] FROM [Tenant_Details], [PG_Table] 
                                             WHERE [Tenant_Details].[Tenant_ID] = [PG_Table].[Tenant_ID] AND [Current_Tenant] = 1";
@@ -39,6 +41,9 @@ namespace PG_Management
                             sda.Fill(dt);
                             GridView1.DataSource = dt;
                             GridView1.DataBind();
+                            LogObject.LogMessage = "Extracting Tenant Details for Modify Tenant Page";
+                            LogObject.Level = LogClass.Information;
+                            LogObject.AddLog();
                         }
                     }
                 }
@@ -59,7 +64,7 @@ namespace PG_Management
         protected void OnRowDeleting(object sender, GridViewDeleteEventArgs e)
         {
             int intTenantID = Convert.ToInt32(GridView1.DataKeys[e.RowIndex].Values[0]);
-            string constr = ConfigurationManager.ConnectionStrings["RemoteDB"].ConnectionString;
+            string constr = ConfigurationManager.ConnectionStrings["SQLServerDB"].ConnectionString;
             using (SqlConnection con = new SqlConnection(constr))
             {
                 using (SqlCommand cmd = new SqlCommand("UPDATE DBO.PG_Table SET [Current_Tenant] = 0 WHERE [Tenant_ID] = @TenantID"))

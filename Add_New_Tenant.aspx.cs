@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Web;
 using System.Web.UI;
-using System.Web.UI.WebControls;
 using System.Configuration;
 using System.Data;
-using Microsoft.Ajax.Utilities;
+
 
 namespace PG_Management
 {
@@ -15,7 +12,7 @@ namespace PG_Management
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            if(!IsPostBack)
+            if (!IsPostBack)
             {
                 if (!String.IsNullOrEmpty(Request.QueryString["strTenantId"]))
                 {
@@ -26,16 +23,13 @@ namespace PG_Management
                     GetCurrentDetails(Request.QueryString["strTenantId"]);
                 }
             }
-            //else
-            //{
-            //    Submit.Click -= new EventHandler(Add_New_Tenant_Details);
-            //    Submit.Click += new EventHandler(ModifyTenantDetails);                
-            //}
+
         }
+
         protected string RunSQL(string strSQLCmd)
         {
             string strReturnValue = string.Empty;
-            string strConnString = ConfigurationManager.ConnectionStrings["RemoteDB"].ConnectionString;
+            string strConnString = ConfigurationManager.ConnectionStrings["SQLServerDB"].ConnectionString;
             SqlConnection conn = new SqlConnection(strConnString);
             SqlCommand sqlCommand = conn.CreateCommand();
             sqlCommand.CommandText = strSQLCmd;
@@ -65,7 +59,7 @@ namespace PG_Management
 
             if (blnModify == false)
             {
-                strValues = @"1, '" + DateTime.Now.ToString("yyyy-MM-dd") + "', 0, " + txtTenantRent.Text.ToString() + ", 0, ' 1900-01-01'";
+                strValues = @"1, '" + DateTime.Now.ToString("yyyy-MM-dd") + "', 0, " + txtTenantRent.Text.ToString().Trim() + ", 0, ' 1900-01-01'";
                 strTenantID = string.Empty;
                 strSQLCmd = "EXEC [dbo].[AddToPGTable] " + strValues;
                 strResult = RunSQL(strSQLCmd);
@@ -84,7 +78,7 @@ namespace PG_Management
                 else
                     return strPaidStatus;
                     
-                strValues = @"1, '" + DateTime.Now.ToString("yyyy-MM-dd") + "', " + strPaidStatus +", "+txtTenantRent.Text.ToString() + ", 0, '1900-01-01', " + strTenantID + ", 1";
+                strValues = @"1, '" + DateTime.Now.ToString("yyyy-MM-dd") + "', " + strPaidStatus +", "+txtTenantRent.Text.ToString().Trim() + ", 0, '1900-01-01', " + strTenantID + ", 1";
                 strSQLCmd = "EXEC [dbo].[AddToPGTable] " + strValues ;
                 strResult = RunSQL(strSQLCmd);
             }
@@ -244,7 +238,7 @@ namespace PG_Management
         protected SqlDataReader RunSQLEnumerable(string strSQLCommand)
         {
             SqlDataReader sqlDataReader ;
-            string strConnString = ConfigurationManager.ConnectionStrings["RemoteDB"].ConnectionString;
+            string strConnString = ConfigurationManager.ConnectionStrings["SQLServerDB"].ConnectionString;
             SqlConnection conn = new SqlConnection(strConnString);
             SqlCommand sqlCommand = conn.CreateCommand();
             sqlCommand.CommandText = strSQLCommand;

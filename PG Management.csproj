@@ -186,6 +186,7 @@
     </Compile>
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Classes\LogClass.cs" />
     <Compile Include="Modify_Tenant.aspx.cs">
       <DependentUpon>Modify_Tenant.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

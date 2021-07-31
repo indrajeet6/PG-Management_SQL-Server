@@ -11,6 +11,7 @@
             CssClass="table table-striped table-bordered table-hover table-condensed"
             OnRowCommand="GridView1_RowCommand">
             <RowStyle HorizontalAlign="Center" />
+            <HeaderStyle HorizontalAlign="Center" />
             <Columns>
                 <asp:TemplateField>
                     <ItemTemplate>
